@@ -34,15 +34,15 @@ export default function NoteForm() {
     const id = useId();
 
     const [errors, setErrors] = useState<NoteFormErrors>({});
-    const { noteData, setNoteData, clearNoteData } = useNoteDraft();
+    const { draft, updateDraft, clearDraft } = useNoteDraft();
 
     const handleChange = (
         event: React.ChangeEvent<
             HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
         >,
     ) => {
-        setNoteData({
-            ...noteData,
+        updateDraft({
+            ...draft,
             [event.target.name]: event.target.value,
         });
     };
@@ -51,7 +51,7 @@ export default function NoteForm() {
         mutationFn: createNote,
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: ["notes"] });
-            clearNoteData();
+            clearDraft();
             router.back();
         },
     });
@@ -105,7 +105,7 @@ export default function NoteForm() {
                     type="text"
                     name="title"
                     className={css.input}
-                    value={noteData?.title}
+                    value={draft?.title}
                     onChange={handleChange}
                 />
                 {errors.title && <span className={css.error}>{errors.title}</span>}
@@ -118,7 +118,7 @@ export default function NoteForm() {
                     name="content"
                     rows={8}
                     className={css.textarea}
-                    value={noteData?.content}
+                    value={draft?.content}
                     onChange={handleChange}
                 />
                 {errors.content && <span className={css.error}>{errors.content}</span>}
@@ -130,7 +130,7 @@ export default function NoteForm() {
                     id={`${id}-tag`}
                     name="tag"
                     className={css.select}
-                    value={noteData?.tag}
+                    value={draft?.tag}
                     onChange={handleChange}
                 >
                     {noteTags.map((tag) => (
