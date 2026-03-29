@@ -6,12 +6,11 @@ import NoteList from "@/components/NoteList/NoteList";
 import css from "./NotesPage.module.css";
 import { keepPreviousData, useQuery } from "@tanstack/react-query";
 import Pagination from "@/components/Pagination/Pagination";
-import Modal from "@/components/Modal/Modal";
-import NoteForm from "@/components/NoteForm/NoteForm";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import { useDebouncedCallback } from "use-debounce";
 import NoNotes from "@/components/NoNotes/NoNotes";
 import {NoteTag} from "@/types/note";
+import Link from "next/link";
 
 interface NoteCLientProps {
     tag?: NoteTag;
@@ -19,11 +18,7 @@ interface NoteCLientProps {
 
 export default function NotesClient({ tag }:NoteCLientProps) {
     const [page, setPage] = useState(1);
-    const [isModalOpen, setIsModalOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
-
-    const openModal = () => setIsModalOpen(true);
-    const closeModal = () => setIsModalOpen(false);
 
     const { data, error, isError } = useQuery({
         queryKey: ["notes", page, searchQuery, tag],
@@ -55,14 +50,9 @@ export default function NotesClient({ tag }:NoteCLientProps) {
                         onPageChange={setPage}
                     />
                 )}
-                <button className={css.button} onClick={openModal}>
+                <Link href="/notes/action/create" className={css.button}>
                     Create note +
-                </button>
-                {isModalOpen && (
-                    <Modal onClose={closeModal}>
-                        <NoteForm onClose={closeModal} />
-                    </Modal>
-                )}
+                </Link>
             </header>
             {data && data.notes.length === 0 && <NoNotes />}
             {notes.length > 0 && <NoteList notes={notes} />}

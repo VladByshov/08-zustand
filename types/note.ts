@@ -16,3 +16,5 @@ export const noteTags: NoteTag[] = [
     "Meeting",
     "Shopping",
 ];
+
+export type CreateNote = Omit<Note, "id" | "createdAt" | "updatedAt">;
